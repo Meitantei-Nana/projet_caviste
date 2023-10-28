@@ -37,7 +37,8 @@
   <div class="container mt-5">
     <!-- Barre de recherche -->
     <div class="mb-3">
-        <input type="text" class="form-control" placeholder="Entrez un vin ...">
+        <input id="vinSearch"type="text" class="form-control" placeholder="Entrez un vin ...">
+        <button type="submit" value="Envoyer">Envoyer</button>
     </div>
 
     <div class="row">
@@ -105,7 +106,8 @@
    <script src="apiService.js"></script>
 
    <script>
-     fetchVins().then(response => response.json()).then(data => {
+    const name = $('#vinSearch').val();
+     fetchVinByName(name).then(response => response.json()).then(data => {
         const $vinList = $('#vinList');
 
           // Vider la liste
