@@ -38,7 +38,7 @@
     <!-- Barre de recherche -->
     <div class="mb-3">
         <input id="vinSearch"type="text" class="form-control" placeholder="Entrez un vin ...">
-        <button type="submit" value="Envoyer">Envoyer</button>
+        <button id="btSearch" type="submit" value="Envoyer" >Envoyer</button>
     </div>
 
     <div class="row">
@@ -54,7 +54,9 @@
         <!-- Détails du vin -->
         <div class="col-md-8">
             <img src="url_de_l_image" alt="Image du vin" class="img-fluid">
-            <h2>Nom du vin</h2>
+            <h2 id="WineName">Nom du vin</h2>
+
+            <p id="wineColor"> Couleur de vin </p>
             <!-- Autres détails ici -->
 
             <!-- Onglets pour les commentaires, notes, etc. -->
@@ -106,8 +108,12 @@
    <script src="apiService.js"></script>
 
    <script>
-    const name = $('#vinSearch').val();
-     fetchVinByName(name).then(response => response.json()).then(data => {
+
+     //récupération des vins depuis l' api 
+     
+     fetchVins().then(response => response.json()).then(data => {
+
+        //récupération de la liste html des vins
         const $vinList = $('#vinList');
 
           // Vider la liste
@@ -115,13 +121,64 @@
 
      // Ajouter chaque vin à la liste avec le style Bootstrap
      $.each(data, function(index, vin) {
+
+        //création d' un élement li
         const $li = $('<li>', {
             class: 'list-group-item', // Classe Bootstrap pour styliser les éléments de liste
             text: vin.nom // Supposant que chaque vin a un attribut 'nom'
         });
+
+        //ajoute attribut data-id a l element
+        $li.attr("data-id",vin.id);
+        //ajoute element li a la liste 
         $vinList.append($li);
-    });
+    
         });
+        
+        //Affichage du vin sélectionné
+        $('#vinList li').each(function(index, li) {
+            //console.log(li);
+            
+            let $li = $(li);
+            $li.click(function() { 
+                //Récupérer l'id du vin
+                let wineId = $li.attr("data-id");
+
+                //Rechercher ce vin dans les data
+                let promise = fetchVinById(wineId);
+
+                promise.then(response => response.json()).then(data => {
+                    //Afficher dans la zone centrale
+                    console.log(data);
+                    let wine = data[0];
+
+                    $('#wineName').html(wine.name);
+                    $('#wineColor').html(wine.color);
+                });
+            });
+        });
+    });
+  //Moteur de recherche
+  $('#btSearch').click(function(){
+        const name = $('#vinSearch').val();
+
+        fetchVinByName(name).then(response => response.json()).then(data => {
+            const $vinList = $('#vinList');
+
+            // Vider la liste
+            $vinList.empty();
+
+            // Ajouter chaque vin à la liste avec le style Bootstrap
+            $.each(data, function(index, vin) {
+                const $li = $('<li>', {
+                    class: 'list-group-item', // Classe Bootstrap pour styliser les éléments de liste
+                    text: vin.name // Supposant que chaque vin a un attribut 'nom'
+                });
+                $vinList.append($li);
+            });
+        });
+
+    })
    </script>
   
 </body>

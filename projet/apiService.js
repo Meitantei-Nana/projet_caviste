@@ -1,3 +1,5 @@
+
+
 const BASE_URL = 'https://cruth.phpnet.org/epfc/caviste/public/index.php/api/';
 
 
@@ -6,7 +8,7 @@ function fetchVins() {
 }
 
 function fetchVinByName(name) {
-    return fetch(`${BASE_URL}wines/${name}`);
+    return fetch(`${BASE_URL}wines/search?keyword=${name}`);
   }
 
 function fetchVinById(id) {
